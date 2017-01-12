@@ -1,10 +1,10 @@
 {
-  "name": "My App",
-  "short_name": "My App",
+  "name": "Polytimer",
+  "short_name": "Polytimer",
   "start_url": "/?homescreen=1",
-  "display": "standalone",
-  "theme_color": "#3f51b5",
-  "background_color": "#3f51b5",
+  "display": "fullscreen",
+  "theme_color": "#6A1B9A",
+  "background_color": "#4a148c",
   "icons": [
     {
       "src": "images/manifest/icon-192x192.png",
