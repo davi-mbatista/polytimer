@@ -1,11 +1,9 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/my-app.html",
+  "shell": "src/polytimer-app.html",
   "fragments": [
-    "src/my-view1.html",
-    "src/my-view2.html",
-    "src/my-view3.html",
-    "src/my-view404.html"
+    "src/polytimer-icons.html",    
+    "src/polytimer-404.html"
   ],
   "sourceGlobs": [
     "src/**/*",
@@ -14,6 +12,11 @@
   ],
   "includeDependencies": [
     "manifest.json",
+    "favicon.ico",
+    "humans.txt",
+    "robots.txt",
+    "manifest.webapp",
+    "browserconfig.xml",
     "bower_components/webcomponentsjs/webcomponents-lite.min.js"
   ]
 }
