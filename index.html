@@ -1,13 +1,3 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -15,47 +5,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="generator" content="Polymer Starter Kit">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>My App</title>
-    <meta name="description" content="My App description">
+    <title>Polytimer</title>
+    <meta name="description" content="Keep your time together!">
 
-    <link rel="icon" href="/images/favicon.ico">
-
-    <!-- See https://goo.gl/OOhYW5 -->
+    <!-- MANIFEST -->
     <link rel="manifest" href="/manifest.json">
 
-    <!-- See https://goo.gl/qRE0vM -->
-    <meta name="theme-color" content="#3f51b5">
+    <!-- THEME COLOR -->
+    <meta name="theme-color" content="#4a148c">
 
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
+
+    <!--ANDROID-->
     <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="My App">
+    <meta name="application-name" content="Polytimer">
+
+
+    <!--  APPLE STUFF  -->
+    <!-- Apple Homescreen icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple/apple-touch-icon.png">
 
     <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="My App">
+    <meta name="apple-mobile-web-app-title" content="Polytimer">
 
-    <!-- Homescreen icons -->
-    <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
-
+    <!-- SAFARI PINNED TAB -->
+    <link rel="mask-icon" href="/images/apple/safari-pinned-tab.svg" color="#4a148c">
+    
+    <!-- WINDOWS STUFF -->
     <!-- Tile icon for Windows 8 (144x144 + tile color) -->
-    <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
-    <meta name="msapplication-TileColor" content="#3f51b5">
+    <meta name="msapplication-TileColor" content="#4a148c">
+    <meta name="msapplication-TileImage" content="/images/microsoft/mstile-144x144.png">
     <meta name="msapplication-tap-highlight" content="no">
 
+
+    <!-- Setup Polymer options-->
     <script>
-      // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
         lazyRegister: true,
       };
+    </script>
 
-      // Load webcomponentsjs polyfill if browser does not support native
-      // Web Components
+    <!--Load webcomponentsjs polyfill if browser does not support native-->
+    <!--Web Components-->
+    <script>
       (function() {
         'use strict';
 
@@ -85,16 +84,58 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           onload();
         }
       })();
+    </script>
 
-      // Load pre-caching Service Worker
+    <!--Service Worker Registration-->
+    <script>
+      //checks for aviability of service worker on the client
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/service-worker.js');
+        window.addEventListener('load', function(){
+          var polytimerApp = document.querySelector('polytimer-app');
+
+          //Tries to register the sw
+          navigator.serviceWorker.register('/service-worker.js').then(function(reg) {
+            
+            //Initialize installation worker var
+            var installingWorker;
+            
+            //adds listener for update
+            reg.onupdatefound = function() {
+
+              //fills installing status
+              installingWorker = reg.installing;
+              
+              //Switch on status change
+              installingWorker.onstatechange = function() {
+                switch (installingWorker.state) {
+                  case 'installed':
+                    if (navigator.serviceWorker.controller) {
+                      //update
+                      polytimerApp.setAttribute('service-worker-state', 'update');
+                    } else {
+                      //installed
+                      polytimerApp.setAttribute('service-worker-state', 'installed');                                          
+                    }
+                    break;
+                  case 'waiting':
+                    //waiting
+                    return polytimerApp.setAttribute('service-worker-state', 'update');                                      
+                    break;
+                  case 'redundant':
+                    //redundant
+                    return polytimerApp.setAttribute('service-worker-state', 'redundant');                                                          
+                    break;
+                }
+              };
+            };
+          });
         });
+      } else {
+        console.log("your browser is not ready to service worker :(");
       }
     </script>
 
-    <link rel="import" href="/src/my-app.html">
+    <link rel="import" href="/src/polytimer-app.html">
 
     <style>
       body {
@@ -106,8 +147,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
   </head>
+
+  <!--ENTRY POINT-->
   <body>
-    <my-app></my-app>
-    <!-- Built with love using Polymer Starter Kit -->
+    <polytimer-app ></polytimer-app>
   </body>
 </html>
