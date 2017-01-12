@@ -1,0 +1,89 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="my-app">
+  <template>
+    <style>
+      :host{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+
+        flex-wrap: wrap;
+
+        width: 100vw;
+        height: 100vh;
+
+        color: #3F51B5;        
+      }
+
+      div {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      #timer-display{
+        font-size: 3rem;
+        font-weight: 500;
+        color: #616161;
+      }
+
+      paper-button {
+        font-family: 'Roboto', 'Noto', sans-serif;
+        font-weight: normal;
+        font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+      }
+      paper-button.pink {
+        color: var(--paper-pink-a200);
+        --paper-button-ink-color: var(--paper-pink-a200);
+      }
+
+    </style>
+
+    <h1>Timer</h1>
+    <div id="timer-display">[[currentTime]]</div>
+    <div class="slide-wrapper">
+      <paper-slider id="slider" min="0" step="5" value="5" pin max="60"></paper-slider>
+    </div>
+    <paper-button class="pink">start</paper-button>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-app',
+
+      properties:{
+        currentTime:{
+          type: Number,
+        }
+      },
+
+      listeners: {
+        'immediate-value-change': 'immediateValueChangeHandler',
+        'change': 'changeHandler'
+      },
+
+      immediateValueChangeHandler: function (e) {
+        var value = this.$.slider.immediateValue;
+        this.currentTime = value;                
+      },
+
+      changeHandler: function (e) {
+        var value = this.$.slider.value;
+        this.currentTime = value;
+      },
+
+      ready: function(){
+          var value = this.$.slider.value;
+          this.currentTime = value;
+      },
+    });
+  </script>
+</dom-module>
