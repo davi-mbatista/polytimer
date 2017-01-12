@@ -1,0 +1,25 @@
+{
+  "version": "0.0.1",
+  "name": "Polytimer",
+  "launch_path": "/index.html",
+  "description": "Keep your time Keep your time together!",
+  "icons": {
+      "512": "images/manifest/icon-512x512.png",      
+  },
+  "developer": {
+    "name": "Davi Machado",
+    "url": "https://machado.link"
+  },
+  "installs_allowed_from": [
+    "*"
+  ],
+  "default_locale": "en",
+  "permissions": {
+  },
+  "locales": {
+    "en": {
+      "name": "Polytimer",
+      "description": "Keep your time together!"
+    }
+  }
+}
