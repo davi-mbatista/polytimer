@@ -1,0 +1,168 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+
+<dom-module id="polytimer-app">
+  <template>
+
+    <style>
+      :host{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+
+        flex-wrap: wrap;
+
+        width: 100vw;
+        height: 100vh;
+
+        color: white;
+        background-color: #4A148C; 
+      }
+
+      h1{
+        font-weight: 400;
+      }
+
+      div {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      #timer-display{
+        font-size: 5rem;
+        font-weight: 400;
+
+        color:white;
+      }
+
+      paper-slider{
+        --paper-slider-container-color:white;
+        --paper-slider-active-color: #E91E63;
+        --paper-slider-knob-color: #C2185B;
+        --paper-slider-pin-color: #EC407A;
+        --paper-slider-knob-start-color: transparent;
+        --paper-slider-knob-start-border-color: white;
+
+        margin: 1rem 0;
+      }
+
+      paper-button {
+        font-family: 'Roboto', 'Noto', sans-serif;
+        font-weight: normal;
+        font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      paper-button.pink {
+        color: white;
+        --paper-button-ink-color: var(--paper-pink-a200);
+      }
+
+      paper-fab{
+        position: fixed;
+        bottom: 3rem;
+      }
+
+    </style>
+
+    <h1>Timer</h1>
+    
+    <!--Display label-->
+    <div id="timer-display">[[currentTime]]</div>
+    
+    <!--Slider value-->
+    <div class="slide-wrapper">
+      <paper-slider id="slider" min="0" step="5" value="5" pin max="60"></paper-slider>
+    </div>
+
+    <!--Action button-->
+    <paper-fab icon="av:play-arrow"></paper-fab>
+  
+    <!--Service Worker toasts-->
+    <!--
+      TODO: Componentizar isso!
+    -->
+    <paper-toast 
+      text="" 
+      id="serviceWorkerFeedbackToast">
+    </paper-toast>
+
+    <paper-toast 
+      id="serviceWorkerUpdateAviableToast" 
+      duration="0"
+      text="Update aviable!">
+      <paper-button on-tap="_toastReloadApp">install</paper-button>
+    </paper-toast>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'polytimer-app',
+
+      properties:{
+        currentTime:{
+          type: Number,
+        },
+
+        serviceWorkerState:{
+          type: String,
+          notify: true,
+          observer: '_serviceWorkerStateChanged'
+        },
+      },
+
+      listeners: {
+        'immediate-value-change': 'immediateValueChangeHandler',
+        'change': 'changeHandler'
+      },
+
+      //Updates the value on change of the slider while user is interacting      
+      immediateValueChangeHandler: function (e) {
+        var value = this.$.slider.immediateValue;
+        this.currentTime = value;                
+      },
+
+      //Updates the value on change of the slider right before user interaction
+      changeHandler: function (e) {
+        var value = this.$.slider.value;
+        this.currentTime = value;
+      },
+
+      //Treats the service worker status change        
+      _serviceWorkerStateChanged: function(newServiceWorkerState){
+        if(newServiceWorkerState === 'installed'){
+            this.$.serviceWorkerFeedbackToast.text = 'cache done! ready to go off-line';                      
+            this.$.serviceWorkerFeedbackToast.opened = true;          
+        } else if (newServiceWorkerState === 'update' || newServiceWorkerState === 'updated' || newServiceWorkerState === 'waiting'){
+            this.$.serviceWorkerUpdateAviableToast.opened = true;            
+        } else if(newServiceWorkerState === 'error'){
+            this.$.serviceWorkerFeedbackToast.text = 'something went wrong =(';                      
+            this.$.serviceWorkerFeedbackToast.opened = true;                
+        } else {
+          return
+        }
+      },
+
+      //Reload the page if user clicked on a update toast
+      _toastReloadApp: function(){
+        this.$.serviceWorkerUpdateAviableToast.toggle();
+        location.reload();
+      },
+
+      //Add the current default slider value to the display
+      ready: function(){
+          var value = this.$.slider.value;
+          this.currentTime = value;
+      },
+    });
+  </script>
+</dom-module>
