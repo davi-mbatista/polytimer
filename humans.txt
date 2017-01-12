@@ -1,0 +1,16 @@
+
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+  Daví Machado @davi_mbatista
+  Rodrigo Moura @_rodrigomoura
+
+# THANKS
+
+  For my mom and my wife
+
+# TECHNOLOGY COLOPHON
+
+  HTML5, CSS3, Web Components, Web Starter Kit
