@@ -83,7 +83,7 @@
     </div>
 
     <!--Action button-->
-    <paper-fab elevation="5" on-tap="_playPauseHandler" icon="av:play-arrow"></paper-fab>
+    <paper-fab id="fab" elevation="5" on-tap="_playPauseHandler" icon="av:play-arrow"></paper-fab>
   
     <!--Service Worker toasts-->
     <!--
@@ -130,11 +130,13 @@
 
       _playPauseHandler:function (){
         if(this.$.counter.paused){
-          this.$.counter.paused = false;          
+          this.$.counter.paused = false;
+          this.$.fab.icon = "av:play-arrow";                    
           console.log('Paused!');          
         } else {
           console.log('Not paused!');
           this.$.counter.paused = true;
+          this.$.fab.icon = "av:pause";
         }
       },
 
