@@ -7,6 +7,9 @@
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 
+<link rel="import" href="./polytimer-timer.html">
+
+
 <dom-module id="polytimer-app">
   <template>
 
@@ -70,7 +73,9 @@
     </style>
         
     <!--Display label-->
-    <div id="timer-display">[[currentTime]]:00</div>
+    <div id="timer-display">
+      <polytimer-timer id="counter"></polytimer-timer>
+    </div>
     
     <!--Slider value-->
     <div class="slide-wrapper">
@@ -78,7 +83,7 @@
     </div>
 
     <!--Action button-->
-    <paper-fab elevation="5" toggles label="Start" icon="av:play-arrow"></paper-fab>
+    <paper-fab elevation="5" on-tap="_playPauseHandler" icon="av:play-arrow"></paper-fab>
   
     <!--Service Worker toasts-->
     <!--
@@ -106,7 +111,7 @@
         currentTime:{
           type: Number,
         },
-
+        
         serviceWorkerState:{
           type: String,
           notify: true,
@@ -121,6 +126,16 @@
       listeners: {
         'immediate-value-change': 'immediateValueChangeHandler',
         'change': 'changeHandler',
+      },
+
+      _playPauseHandler:function (){
+        if(this.$.counter.paused){
+          this.$.counter.paused = false;          
+          console.log('Paused!');          
+        } else {
+          console.log('Not paused!');
+          this.$.counter.paused = true;
+        }
       },
 
       //Updates the value on change of the slider while user is interacting      

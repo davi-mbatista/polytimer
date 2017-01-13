@@ -5,14 +5,58 @@
   <template>
     <style>
       :host {
-        display: block;
+        display: flex;
+
+        flex-wrap: nowrap;
+
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+
+        width: 100%;
       }
+
+      :host([paused]){
+        animation-name: flash;
+        animation-duration: .4s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+        animation-direction: alternate;
+      }
+
+      @keyframes flash{
+        from{
+          opacity: 1;
+        }
+
+        to{
+          opacity: 0;
+        }
+      }
+
     </style>
     
+    <div>
+      <span id="timer-minutes">00</span><span di="timer-separator">:</span><span id="timer-seconds">00</span>
+    </div>
+
   </template>
   <script>
     Polymer({
-      is: 'polytimer-timer'
+      is: 'polytimer-timer',
+
+      properties:{
+        paused:{
+          type: Boolean,
+          notify: true,
+          value: false,
+          reflectToAttribute: true
+        }
+      },
+
+      ready:function(){
+        console.log(this + 'is ready!');
+      }
     });
   </script>
 </dom-module>
