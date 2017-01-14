@@ -8,87 +8,42 @@
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 
 <link rel="import" href="./polytimer-timer.html">
-
+<link rel="import" href="./polytimer-app-styles.html">
 
 <dom-module id="polytimer-app">
   <template>
-
-    <style>
-      :host{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        align-content: center;
-
-        flex-wrap: wrap;
-
-        width: 100%;
-        height: 100%;
-
-        color: white;
-        background-color: #4A148C; 
-      }
-
-      div {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-      }
-
-      #timer-display{
-        font-size: 5rem;
-        font-weight: 400;
-
-        color:white;
-      }
-
-      paper-slider{
-        --paper-slider-container-color:white;
-        --paper-slider-active-color: #E91E63;
-        --paper-slider-knob-color: #E91E63;
-        --paper-slider-pin-color: #E91E63;
-        --paper-slider-knob-start-color: transparent;
-        --paper-slider-knob-start-border-color: white;
-
-        margin: 1rem 0;
-      }
-
-      paper-button {
-        font-family: 'Roboto', 'Noto', sans-serif;
-        font-weight: normal;
-        font-size: 14px;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      paper-button.pink {
-        color: white;
-        --paper-button-ink-color: var(--paper-pink-a200);
-      }
-
-      paper-fab{
-        position: fixed;
-        bottom: 4vh;
-      }
-
-    </style>
+    <style is="custom-style" include="polytimer-app-styles"></style>
         
     <!--Display label-->
     <div id="timer-display">
-      <polytimer-timer id="counter"></polytimer-timer>
+      <polytimer-timer minutes={{currentTime}} id="timer"></polytimer-timer>
     </div>
     
     <!--Slider value-->
     <div class="slide-wrapper">
-      <paper-slider id="slider" min="0" snaps transiting focused step="5" value="5" pin max="60"></paper-slider>
+      <paper-slider 
+        id="slider"
+        value="{{value}}"
+        max="60"
+        min="5" 
+        step="5"        
+        pin >
+      </paper-slider>
     </div>
 
+    <paper-button id="reset" disapear on-tap="resetHandler">
+      <iron-icon icon="av:replay"></iron-icon>
+    </paper-button>
+
     <!--Action button-->
-    <paper-fab id="fab" elevation="5" on-tap="_playPauseHandler" icon="av:play-arrow"></paper-fab>
+    <paper-fab id="play"  elevation="0" on-tap="playHandler" icon="av:play-arrow"></paper-fab>
+    <paper-fab id="pause" elevation="0" on-tap="pauseHandler" icon="av:pause" disapear></paper-fab>    
   
     <!--Service Worker toasts-->
     <!--
       TODO: Componentizar isso!
     -->
+
     <paper-toast 
       text="" 
       id="serviceWorkerFeedbackToast">
@@ -119,25 +74,45 @@
         },
       },
 
-      behaviors: [
-
-      ],
-
       listeners: {
         'immediate-value-change': 'immediateValueChangeHandler',
+        'timerStarted': 'hideSlider',
         'change': 'changeHandler',
+        'timerReseted': 'resetEventHandler'
       },
 
-      _playPauseHandler:function (){
-        if(this.$.counter.paused){
-          this.$.counter.paused = false;
-          this.$.fab.icon = "av:play-arrow";                    
-          console.log('Paused!');          
+      playHandler: function(){
+        if(this.$.timer.paused === true){
+          this.$.timer.resume(this.$.timer.minutes, this.$.timer.seconds);
+          this.$.play.setAttribute('disapear', '');
+          this.$.pause.removeAttribute('disapear');
+          this.$.reset.setAttribute('disapear', '');          
         } else {
-          console.log('Not paused!');
-          this.$.counter.paused = true;
-          this.$.fab.icon = "av:pause";
-        }
+          this.$.timer.start();
+          this.$.play.setAttribute('disapear', '');
+          this.$.pause.removeAttribute('disapear');   
+        }           
+      },
+      pauseHandler: function(){
+        this.$.timer.pause();
+
+        this.$.pause.setAttribute('disapear', '');
+        this.$.reset.removeAttribute('disapear');
+        this.$.play.removeAttribute('disapear');              
+                      
+      },
+      resetHandler:function(){
+        this.$.timer.reset(this.$.slider.value);
+      },
+      hideSlider: function(){
+        this.$.slider.setAttribute('disapear', '');
+      },
+
+      resetEventHandler:function(){
+        this.$.reset.setAttribute('disapear', '');
+        this.$.pause.setAttribute('disapear', '');
+        this.$.slider.removeAttribute('disapear', '');
+        this.$.slider.removeAttribute('disapear', '');                                                        
       },
 
       //Updates the value on change of the slider while user is interacting      
@@ -175,8 +150,7 @@
 
       //Add the current default slider value to the display
       ready: function(){
-          var value = this.$.slider.value;
-          this.currentTime = value;
+
       },
     });
   </script>
