@@ -23,7 +23,7 @@
     <div class="slide-wrapper">
       <paper-slider 
         id="slider"
-        value="{{value}}"
+        value="{{currentTime}}"
         max="60"
         min="1"        
         >
@@ -64,6 +64,9 @@
       properties:{
         currentTime:{
           type: Number,
+          value: function(){
+            return 5;
+          }
         },
         
         serviceWorkerState:{
