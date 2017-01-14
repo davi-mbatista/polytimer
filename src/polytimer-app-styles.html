@@ -1,0 +1,82 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="polytimer-app-styles">
+  <template>
+    <style>
+
+      *{
+        transition: opacity .25s ease;
+      }
+      :host{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+
+        flex-wrap: wrap;
+
+        width: 100%;
+        height: 100%;
+
+        color: white;
+        background-color: #4A148C; 
+      }
+
+      [disapear]{
+        opacity: 0;
+        pointer-events: none;
+        touch-action: none;
+      }
+
+      div {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      #timer-display{
+        font-size: 5.5rem;
+        font-weight: 400;
+        color:white;
+      }
+
+      paper-slider{
+        --paper-slider-container-color:white;
+        --paper-slider-active-color: #E91E63;
+        --paper-slider-knob-color: #E91E63;
+        --paper-slider-pin-color: #E91E63;
+        --paper-slider-knob-start-color: transparent;
+        --paper-slider-knob-start-border-color: white;
+
+        margin: 1rem 0;
+        opacity: 1;
+
+      }
+
+      paper-button#reset{
+        width: auto;
+        min-width: auto;
+        margin: 0;
+        padding: 0.5rem;
+        border-radius: 1000px;
+      }
+
+      paper-button {
+        font-family: 'Roboto', 'Noto', sans-serif;
+        font-weight: normal;
+        font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      paper-button.pink {
+        color: white;
+        --paper-button-ink-color: var(--paper-pink-a200);
+      }
+
+      paper-fab{
+        position: fixed;
+        bottom: 4vh;
+      }
+    </style>
+  </template>
+</dom-module>
