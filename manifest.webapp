@@ -2,12 +2,13 @@
   "version": "0.0.1",
   "name": "Polytimer",
   "launch_path": "/index.html",
-  "description": "Keep your time Keep your time together!",
+  "description":"Keep your time together man! Simple timer app that helps you to relax and not forget thing on the oven.",
   "icons": {
-      "512": "images/manifest/icon-512x512.png",      
+      "512": "images/manifest/icon-512x512.png",
+      "192": "images/manifest/icon-192x192.png",                  
   },
   "developer": {
-    "name": "Davi Machado",
+    "name": "Daví Machado",
     "url": "https://machado.link"
   },
   "installs_allowed_from": [

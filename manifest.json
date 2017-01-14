@@ -2,6 +2,7 @@
   "name": "Polytimer",
   "short_name": "Polytimer",
   "start_url": "/?homescreen=1",
+  "description":"Keep your time together man! Simple timer app that helps you to relax and not forget thing on the oven.",
   "display": "fullscreen",
   "theme_color": "#6A1B9A",
   "background_color": "#4a148c",
