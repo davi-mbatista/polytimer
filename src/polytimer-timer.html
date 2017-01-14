@@ -1,6 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-
 <dom-module id="polytimer-timer">
   <template>
     <style>
@@ -18,7 +17,7 @@
 
       :host([paused]){
         animation-name: flash;
-        animation-duration: .4s;
+        animation-duration: .5s;
         animation-iteration-count: infinite;
         animation-timing-function: linear;
         animation-direction: alternate;
@@ -37,11 +36,13 @@
     </style>
     
     <div>
-      <span id="timer-minutes">00</span><span di="timer-separator">:</span><span id="timer-seconds">00</span>
+      <span id="timer-minutes"><span id="minuteZeroPlaceholder">0</span>{{minutes}}</span><span id="timer-separator">:</span><span id="timer-seconds"><span id="secondZeroPlaceholder">0</span>{{seconds}}</span>
     </div>
 
   </template>
   <script>
+    var minuteCounting;
+
     Polymer({
       is: 'polytimer-timer',
 
@@ -50,12 +51,151 @@
           type: Boolean,
           notify: true,
           value: false,
-          reflectToAttribute: true
+          reflectToAttribute: true,
+          observer:'pausedChanged',          
+        },
+        running:{
+          type: Boolean,
+          notify: true,
+          value: false,
+          reflectToAttribute: true,
+          observer: 'runningChanged',
+        },
+        minutes:{
+          type: Number,
+          notifiy: true,
+          value: function(){
+            return 5;
+          },
+          observer: 'minutesChanged'
+        },
+        seconds:{
+          type: Number,
+          notify: true,
+          value:function(){
+            return 0;
+          },
+          observer: 'secondsChanged'          
         }
       },
 
-      ready:function(){
-        console.log(this + 'is ready!');
+      minutesChanged: function(value){
+        if(value >= 10){
+          this.$.minuteZeroPlaceholder.hidden = true;
+        } else {
+          this.$.minuteZeroPlaceholder.hidden = false;          
+        }
+      },
+      secondsChanged: function(value){      
+        if(value < 10 ){
+          this.$.secondZeroPlaceholder.hidden = false;         
+        } else {
+          this.$.secondZeroPlaceholder.hidden = true;                   
+        }
+      },
+      stopedChanged:function(value){
+        value? function(){return console.log('timer was stoped')} : function(){return};
+      },
+      pausedChanged:function(value){
+        value? function(){return console.log('timer was paused')} : function(){return};        
+      },
+      runningChanged:function(value){
+        value? function(){return console.log('timer is running')} : function(){return};        
+      },
+      start: function(){
+        var timer = this;
+
+        if(timer.running === true){
+            timer.fire('TimerstillRunning');         
+        } else {
+          //set timer to running
+          timer.fire('timerStarted');         
+
+          timer.running = true;
+          
+          timer.$.secondZeroPlaceholder.hidden = true;     
+
+          var timerInitedWith = timer.minutes;
+
+          timer.minutes = timer.minutes - 1;
+          timer.seconds = 59;
+          
+          var currentMinutes = timer.minutes;
+          var currentSeconds = timer.seconds;
+
+          minuteCounting = setInterval(function(){
+            if(!(currentSeconds <= 0 )){
+
+              currentSeconds = currentSeconds - 1;
+              timer.seconds = currentSeconds;
+            
+            } else if( currentSeconds <= 0  && !currentMinutes <= 0 ){
+              
+              currentSeconds = 59;
+              currentMinutes = currentMinutes - 1;
+              
+              timer.seconds = currentSeconds;
+              timer.minutes = currentMinutes;
+            
+            } else {
+              clearInterval(minuteCounting);
+              timer.running = false;              
+              timer.fire('finished', {initedWith: timerInitedWith});
+            }
+          }, 1000);
+        }
+      },
+      pause:function(){
+        var timer = this;
+
+        timer.paused = true;
+
+        timer.fire('Timerpaused', {paused:{
+          minutes: timer.minutes,
+          seconds: timer.seconds
+        }});
+
+        clearInterval(minuteCounting);
+      },
+      resume: function(minutes, seconds){
+        var timer = this;
+        
+        timer.fire('Timerresumed');
+        timer.paused = false;
+
+        var currentMinutes = minutes;
+        var currentSeconds = seconds;
+
+        minuteCounting = setInterval(function(){
+          if(!(currentSeconds <= 0 )){
+
+            currentSeconds = currentSeconds - 1;
+            timer.seconds = currentSeconds;
+          
+          } else if( currentSeconds <= 0  && !currentMinutes <= 0 ){
+            
+            currentSeconds = 59;
+            currentMinutes = currentMinutes - 1;
+            
+            timer.seconds = currentSeconds;
+            timer.minutes = currentMinutes;
+          
+          } else {
+            clearInterval(minuteCounting);
+            timer.running = false;              
+            timer.fire('Timerfinished', {initedWith: timerInitedWith});
+          }
+        }, 1000);
+      },
+      reset:function(resetTo){
+        this.paused   = false;
+        this.running  = false;
+        this.minutes  = resetTo || 5;
+        this.seconds  = 0;
+        clearInterval(minuteCounting);
+
+
+        this.fire('timerReseted');      
       }
     });
   </script>
