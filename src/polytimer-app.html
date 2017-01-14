@@ -113,19 +113,16 @@
         this.$.slider.removeAttribute('disapear', '');
         this.$.slider.removeAttribute('disapear', '');                                                        
       },
-
       //Updates the value on change of the slider while user is interacting      
       immediateValueChangeHandler: function (e) {
         var value = this.$.slider.immediateValue;
         this.currentTime = value;                
       },
-
       //Updates the value on change of the slider right before user interaction
       changeHandler: function (e) {
         var value = this.$.slider.value;
         this.currentTime = value;
       },
-
       //Treats the service worker status change        
       _serviceWorkerStateChanged: function(newServiceWorkerState){
         if(newServiceWorkerState === 'installed'){
@@ -140,16 +137,10 @@
           return
         }
       },
-
       //Reload the page if user clicked on a update toast
       _toastReloadApp: function(){
         this.$.serviceWorkerUpdateAviableToast.toggle();
         location.reload();
-      },
-
-      //Add the current default slider value to the display
-      ready: function(){
-
       },
     });
   </script>
