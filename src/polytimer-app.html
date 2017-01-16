@@ -115,7 +115,9 @@
         this.$.pause.setAttribute('disapear', '');
         this.$.play.removeAttribute('disapear', '');        
         this.$.slider.removeAttribute('disapear', '');
-        this.$.timer.reset(this.$.slider.value);                                                         
+        this.$.timer.reset(this.$.slider.value);
+
+        window.navigator.vibrate([200, 100, 200, 100, 200]);                                                  
       },
       resetEventHandler:function(){
         this.$.reset.setAttribute('disapear', '');
