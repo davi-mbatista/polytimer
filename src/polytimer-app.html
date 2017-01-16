@@ -12,8 +12,9 @@
 
 <dom-module id="polytimer-app">
   <template>
+    <!--Source styles-->
     <style is="custom-style" include="polytimer-app-styles"></style>
-        
+
     <!--Display label-->
     <div id="timer-display">
       <polytimer-timer minutes={{currentTime}} id="timer"></polytimer-timer>
@@ -80,7 +81,8 @@
         'immediate-value-change': 'immediateValueChangeHandler',
         'timerStarted': 'hideSlider',
         'change': 'changeHandler',
-        'timerReseted': 'resetEventHandler'
+        'timerReseted': 'resetEventHandler',
+        'timerFinished': 'finishedEventHandler',        
       },
 
       playHandler: function(){
@@ -109,12 +111,16 @@
       hideSlider: function(){
         this.$.slider.setAttribute('disapear', '');
       },
-
+      finishedEventHandler:function(){
+        this.$.pause.setAttribute('disapear', '');
+        this.$.play.removeAttribute('disapear', '');        
+        this.$.slider.removeAttribute('disapear', '');
+        this.$.timer.reset(this.$.slider.value);                                                         
+      },
       resetEventHandler:function(){
         this.$.reset.setAttribute('disapear', '');
         this.$.pause.setAttribute('disapear', '');
-        this.$.slider.removeAttribute('disapear', '');
-        this.$.slider.removeAttribute('disapear', '');                                                        
+        this.$.slider.removeAttribute('disapear', '');                                                
       },
       //Updates the value on change of the slider while user is interacting      
       immediateValueChangeHandler: function (e) {

@@ -15,6 +15,10 @@
         width: 100%;
       }
 
+      :host *{
+        user-select: none;
+      }
+
       :host([paused]){
         animation-name: flash;
         animation-duration: .5s;
@@ -85,27 +89,37 @@
           this.$.minuteZeroPlaceholder.hidden = false;          
         }
       },
-      secondsChanged: function(value){      
+
+      secondsChanged: function(value){
+
+        if(value === 15 ){
+          this.fire('timerLessThan15');
+        };
+
         if(value < 10 ){
           this.$.secondZeroPlaceholder.hidden = false;         
         } else {
           this.$.secondZeroPlaceholder.hidden = true;                   
-        }
+        };
       },
+
       stopedChanged:function(value){
         value? function(){return console.log('timer was stoped')} : function(){return};
       },
+
       pausedChanged:function(value){
         value? function(){return console.log('timer was paused')} : function(){return};        
       },
+
       runningChanged:function(value){
         value? function(){return console.log('timer is running')} : function(){return};        
       },
+
       start: function(){
         var timer = this;
 
         if(timer.running === true){
-            timer.fire('TimerstillRunning');         
+            timer.fire('TimerStillRunning');         
         } else {
           //set timer to running
           timer.fire('timerStarted');         
@@ -139,27 +153,29 @@
             } else {
               clearInterval(minuteCounting);
               timer.running = false;              
-              timer.fire('finished', {initedWith: timerInitedWith});
+              timer.fire('timerFinished', {initedWith: timerInitedWith});
             }
           }, 1000);
         }
       },
+
       pause:function(){
         var timer = this;
 
         timer.paused = true;
 
-        timer.fire('Timerpaused', {paused:{
+        timer.fire('TimerPaused', {paused:{
           minutes: timer.minutes,
           seconds: timer.seconds
         }});
 
         clearInterval(minuteCounting);
       },
+
       resume: function(minutes, seconds){
         var timer = this;
         
-        timer.fire('Timerresumed');
+        timer.fire('timerResumed');
         timer.paused = false;
 
         var currentMinutes = minutes;
@@ -182,10 +198,11 @@
           } else {
             clearInterval(minuteCounting);
             timer.running = false;              
-            timer.fire('Timerfinished', {initedWith: timerInitedWith});
+            timer.fire('timerFinished', {initedWith: timerInitedWith});
           }
         }, 1000);
       },
+
       reset:function(resetTo){
         this.paused   = false;
         this.running  = false;
