@@ -18,7 +18,6 @@
         width: 100%;
         height: 100%;
 
-        color: white;
         background-color: #4A148C; 
       }
 
@@ -28,16 +27,20 @@
         touch-action: none;
       }
 
-      div {
+      /*div {
         width: 100%;
         display: flex;
         justify-content: center;
-      }
+      }*/
 
       #timer-display{
         font-size: 5.5rem;
         font-weight: 400;
         color:white;
+      }
+
+      #reset iron-icon{
+        fill: white;
       }
 
       paper-slider{
@@ -68,6 +71,12 @@
         color:#7E57C2;
       }
 
+      .slide-wrapper{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+
       paper-button {
         font-family: 'Roboto', 'Noto', sans-serif;
         font-weight: normal;
@@ -84,6 +93,29 @@
         position: fixed;
         bottom: 4vh;
       }
+
+      #notificationcardwrapper{
+        display: flex;
+
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+
+        position: fixed;
+        z-index: 9999;
+
+        width: 100%;
+        height: 100%;
+
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      #notificationcardwrapper paper-card{
+        width: 80%;
+        height: auto;
+        overflow: hidden !important;
+      }
+
     </style>
   </template>
 </dom-module>
