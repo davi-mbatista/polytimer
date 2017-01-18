@@ -6,6 +6,12 @@
   "display": "fullscreen",
   "theme_color": "#6A1B9A",
   "background_color": "#4a148c",
+  "gcm_sender_id": "103953800507",
+  "serviceworker": {
+    "src": "service-worker.js",
+    "scope": "/",
+    "use_cache": true
+  },
   "icons": [
     {
       "src": "images/manifest/icon-192x192.png",
