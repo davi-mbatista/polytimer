@@ -92,13 +92,14 @@
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function(){
           var polytimerApp = document.querySelector('polytimer-app');
-
           //Tries to register the sw
           navigator.serviceWorker.register('/service-worker.js').then(function(reg) {
             
             //Initialize installation worker var
             var installingWorker;
             
+            swRegistration = reg;
+
             //adds listener for update
             reg.onupdatefound = function() {
 
@@ -136,7 +137,7 @@
     </script>
 
     <link rel="import" href="/src/polytimer-app.html">
-
+    
     <style>
       html, body{
         width: 100vw;
@@ -151,13 +152,26 @@
         font-family: 'Roboto', 'Noto', sans-serif;
         background-color: #4a148c;
       }
+
+      .notsupportview{
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+
+        text-align: center;
+        color: white;
+      }
     </style>
   </head>
 
   <!--ENTRY POINT-->
   <body>
     <polytimer-app ></polytimer-app>
-    <div>branch sw</div>
+    <div class="notsupportview">Looks like your browser does not </br>support it =/</div>
   </body>
   
   <script>
