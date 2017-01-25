@@ -17,6 +17,7 @@
     "robots.txt",
     "manifest.webapp",
     "browserconfig.xml",
+    "push-notification-util.js",
     "bower_components/webcomponentsjs/webcomponents-lite.min.js"
   ]
 }
