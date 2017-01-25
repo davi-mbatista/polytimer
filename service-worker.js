@@ -10,6 +10,33 @@
 
 /* eslint no-console: ["error", { allow: ["info"] }] */
 
-console.info(
-  'Service worker disabled for development, will be generated at build time.'
-);
+// console.info(
+//   'Service worker disabled for development, will be generated at build time.'
+// );
+
+
+self.addEventListener('push', function(event) {
+  var title = 'Polytimer';
+  var options = {
+    "body":   "Time is up!",
+    "icon":   "/images/manifest/icon-512x512.png",
+    "badge":  "/images/notification/badge-96x96.png",
+    "vibrate": [500,110,500,110,500,110,500,110,500,110,500,110],
+    "tag": 'renotify',
+    "renotify": true
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('message', function(event) {
+  var title = 'Polytimer';
+  var options = {
+    "body": "Time is up!",
+    "icon": "/images/manifest/icon-512x512.png",
+    "badge":  "/images/notification/badge-96x96.png",
+    "vibrate": [500,110,500,110,500,110,500,110,500,110,500,110],
+    "tag": 'renotify',
+    "renotify": true
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
