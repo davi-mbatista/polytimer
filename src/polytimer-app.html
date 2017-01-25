@@ -7,12 +7,18 @@
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 
-<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<!--<link rel="import" href="../bower_components/polymerfire/firebase-app.html">-->
+<!--<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">-->
 
-<link rel="import" href="./polytimer-timer.html">
 <link rel="import" href="./polytimer-app-styles.html">
+<link rel="import" href="./polytimer-timer.html">
+
 
 <dom-module id="polytimer-app">
   <template>
@@ -20,34 +26,51 @@
     <style is="custom-style" include="polytimer-app-styles"></style>
 
     <!--Firebase app initialization-->
-    <firebase-app 
+    <!--<firebase-app
       api-key="AIzaSyD4dgSlNYeJAsdNiuE21BAZZJ2PhTrFhds"
       auth-domain="polytimer-bfa53.firebaseapp.com"
       database-url="https://polytimer-bfa53.firebaseio.com"
       storage-bucket="polytimer-bfa53.appspot.com"
       messaging-sender-id="62026454225">
-    </firebase-app>
+    </firebase-app>-->
 
     <!--Firebase Anonymous Auth-->
-    <firebase-auth 
-      id="auth" 
+    <!--<firebase-auth
+      id="auth"
       user="{{user}}"
       status-known="{{statusKnow}}"
       on-error="handleError">
-    </firebase-auth>
+    </firebase-auth>-->
+
+    <div id="polytimeroptions">
+      <paper-menu-button dynamic-align horizontal-offset="10" vertical-offset="10">
+        <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+        <paper-listbox class="dropdown-content">
+          <a href="https://twitter.com/davi_mbatista" target="_blank" rel="noopener" tabindex="-1">
+            <paper-item>@davi_mbatista</paper-item>
+          </a>
+          <a href="https://github.com/davi-mbatista" target="_blank" rel="noopener" tabindex="-1">
+            <paper-item>Feedback</paper-item>
+          </a>
+          <a tabindex="-1" hidden$={{userSubscribedForPush}}>
+            <paper-item id="notifications-enabler" on-tap="askForNotificationPermission">Enable Notifications</paper-item>
+          </a>
+        </paper-listbox>
+      </paper-menu-button>
+    </div>
 
     <!--Display label-->
     <div id="timer-display">
       <polytimer-timer minutes={{currentTime}} id="timer"></polytimer-timer>
     </div>
-    
+
     <!--Slider value-->
     <div class="slide-wrapper">
-      <paper-slider 
+      <paper-slider
         id="slider"
         value="{{currentTime}}"
         max="60"
-        min="1"        
+        min="1"
         >
       </paper-slider>
     </div>
@@ -58,20 +81,20 @@
 
     <!--Action button-->
     <paper-fab id="play"  elevation="0" on-tap="playHandler" icon="av:play-arrow"></paper-fab>
-    <paper-fab id="pause" elevation="0" on-tap="pauseHandler" icon="av:pause" disapear></paper-fab>    
-  
+    <paper-fab id="pause" elevation="0" on-tap="pauseHandler" icon="av:pause" disapear></paper-fab>
+
     <!--Service Worker toasts-->
     <!--
       TODO: Componentizar isso!
     -->
 
-    <paper-toast 
-      text="" 
+    <paper-toast
+      text=""
       id="serviceWorkerFeedbackToast">
     </paper-toast>
 
-    <paper-toast 
-      id="serviceWorkerUpdateAviableToast" 
+    <paper-toast
+      id="serviceWorkerUpdateAviableToast"
       duration="0"
       text="Update aviable!">
       <paper-button on-tap="toastReloadApp">install</paper-button>
@@ -107,31 +130,39 @@
           type: String,
           notify: true,
         },
+        userSubscribedForPush:{
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true,
+        },
+      },
+      askForNotificationPermission: function(){
+        this.fire('askingForNotification');
       },
       listeners: {
         'immediate-value-change': 'immediateValueChangeHandler',
         'timerStarted': 'hideSlider',
         'change': 'changeHandler',
         'timerReseted': 'resetEventHandler',
-        'timerFinished': 'finishedEventHandler',        
+        'timerFinished': 'finishedEventHandler',
       },
       playHandler: function(){
         if(this.$.timer.paused === true){
           this.$.timer.resume(this.$.timer.minutes, this.$.timer.seconds);
           this.$.play.setAttribute('disapear', '');
           this.$.pause.removeAttribute('disapear');
-          this.$.reset.setAttribute('disapear', '');          
+          this.$.reset.setAttribute('disapear', '');
         } else {
           this.$.timer.start();
           this.$.play.setAttribute('disapear', '');
-          this.$.pause.removeAttribute('disapear');   
+          this.$.pause.removeAttribute('disapear');
         }
       },
       pauseHandler: function(){
         this.$.timer.pause();
         this.$.pause.setAttribute('disapear', '');
         this.$.reset.removeAttribute('disapear');
-        this.$.play.removeAttribute('disapear');                    
+        this.$.play.removeAttribute('disapear');
       },
       resetHandler:function(){
         this.$.timer.reset(this.$.slider.value);
@@ -141,36 +172,37 @@
       },
       finishedEventHandler:function(){
         this.$.pause.setAttribute('disapear', '');
-        this.$.play.removeAttribute('disapear', '');        
+        this.$.play.removeAttribute('disapear', '');
         this.$.slider.removeAttribute('disapear', '');
         this.$.timer.reset(this.$.slider.value);
-        window.navigator.vibrate([800, 500, 800, 500, 800, 500, 800]);                                                  
+        this.fire('timerHasFinished');
+        window.navigator.vibrate([800, 500, 800, 500, 800, 500, 800]);
       },
       resetEventHandler:function(){
         this.$.reset.setAttribute('disapear', '');
         this.$.pause.setAttribute('disapear', '');
-        this.$.slider.removeAttribute('disapear', '');                                                
+        this.$.slider.removeAttribute('disapear', '');
       },
-      //Updates the value on change of the slider while user is interacting      
+      //Updates the value on change of the slider while user is interacting
       immediateValueChangeHandler: function (e) {
         var value = this.$.slider.immediateValue;
-        this.currentTime = value;                
+        this.currentTime = value;
       },
       //Updates the value on change of the slider right before user interaction
       changeHandler: function (e) {
         var value = this.$.slider.value;
         this.currentTime = value;
       },
-      //Treats the service worker status change        
+      //Treats the service worker status change
       serviceWorkerStateChanged: function(newServiceWorkerState){
         if(newServiceWorkerState === 'installed'){
-            this.$.serviceWorkerFeedbackToast.text = 'cache done! ready to go off-line';                      
-            this.$.serviceWorkerFeedbackToast.opened = true;          
+            this.$.serviceWorkerFeedbackToast.text = 'cache done! ready to go off-line';
+            this.$.serviceWorkerFeedbackToast.opened = true;
         } else if (newServiceWorkerState === 'update' || newServiceWorkerState === 'updated' || newServiceWorkerState === 'waiting'){
-            this.$.serviceWorkerUpdateAviableToast.opened = true;            
+            this.$.serviceWorkerUpdateAviableToast.opened = true;
         } else if(newServiceWorkerState === 'error'){
-            this.$.serviceWorkerFeedbackToast.text = 'something went wrong =(';                      
-            this.$.serviceWorkerFeedbackToast.opened = true;                
+            this.$.serviceWorkerFeedbackToast.text = 'something went wrong =(';
+            this.$.serviceWorkerFeedbackToast.opened = true;
         } else {
           return
         }
@@ -181,13 +213,13 @@
         location.reload();
       },
       ready: function(){
-        this.$.auth.signInAnonymously()
-                   .then(function(response){
-                    //  console.log(response);
-                   })
-                   .catch(function(error){
-                    //  console.lgo(error);
-                   });
+        // this.$.auth.signInAnonymously()
+        //            .then(function(response){
+        //             //  console.log(response);
+        //            })
+        //            .catch(function(error){
+        //             //  console.lgo(error);
+        //            });
       }
     });
   </script>
