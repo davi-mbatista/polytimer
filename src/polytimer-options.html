@@ -1,6 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
@@ -22,6 +21,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        z-index: 9000;
       }
 
       paper-menu-button {
@@ -43,9 +44,9 @@
         <a href="https://github.com/davi-mbatista" target="_blank" rel="noopener" tabindex="-1">
           <paper-item>Feedback</paper-item>
         </a>
-        <!--<a tabindex="-1">
+        <a tabindex="-1" hidden$={{userSubscribedForPush}}>
           <paper-item id="notifications-enabler" on-tap="askForNotificationPermission">Enable Notifications</paper-item>
-        </a>-->
+        </a>
       </paper-listbox>
     </paper-menu-button>
 
@@ -53,6 +54,14 @@
   <script>
     Polymer({
       is: 'polytimer-options',
+
+      properties:{
+        userSubscribedForPush:{
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true,
+        }
+      },
 
       askForNotificationPermission: function(){
         this.fire('askingForNotification');
