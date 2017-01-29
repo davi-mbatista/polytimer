@@ -2,19 +2,17 @@
 
 <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/av-icons.html">
+
+
 
 <link rel="import" href="./polytimer-app-styles.html">
 <link rel="import" href="./polytimer-timer.html">
+<link rel="import" href="./polytimer-options.html">
 
 
 <dom-module id="polytimer-app">
@@ -24,22 +22,10 @@
     <!--Source styles-->
     <style is="custom-style" include="polytimer-app-styles"></style>
 
-    <div id="polytimeroptions">
-      <paper-menu-button dynamic-align horizontal-offset="10" vertical-offset="10">
-        <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
-        <paper-listbox class="dropdown-content">
-          <a href="https://twitter.com/davi_mbatista" target="_blank" rel="noopener" tabindex="-1">
-            <paper-item>@davi_mbatista</paper-item>
-          </a>
-          <a href="https://github.com/davi-mbatista/polytimer" target="_blank" rel="noopener" tabindex="-1">
-            <paper-item>Feedback</paper-item>
-          </a>
-          <a tabindex="-1" hidden$={{userSubscribedForPush}}>
-            <paper-item id="notifications-enabler" on-tap="askForNotificationPermission">Enable Notifications</paper-item>
-          </a>
-        </paper-listbox>
-      </paper-menu-button>
-    </div>
+    
+
+    <!--Options-->
+    <polytimer-options id="options"></polytimer-options>
 
     <!--Display label-->
     <div id="timer-display">
@@ -62,8 +48,10 @@
     </paper-button>
 
     <!--Action button-->
-    <paper-fab id="play"  elevation="0" on-tap="playHandler" icon="av:play-arrow"></paper-fab>
-    <paper-fab id="pause" elevation="0" on-tap="pauseHandler" icon="av:pause" disapear></paper-fab>
+    <div class="fab-wrapper">
+        <paper-fab id="play"  elevation="0" on-tap="playHandler" icon="av:play-arrow"></paper-fab>
+        <paper-fab id="pause" elevation="0" on-tap="pauseHandler" icon="av:pause" disapear></paper-fab>
+    </div>
 
     <!--Service Worker toasts-->
     <!--
@@ -78,10 +66,9 @@
     <paper-toast
       id="serviceWorkerUpdateAviableToast"
       duration="0"
-      text="Update aviable!">
-      <paper-button on-tap="toastReloadApp">install</paper-button>
+      text="A new version is aviable!">
+      <paper-button on-tap="toastReloadApp">update</paper-button>
     </paper-toast>
-
   </template>
 
   <script>
@@ -89,44 +76,39 @@
       is: 'polytimer-app',
 
       properties:{
+
         currentTime:{
           type: Number,
           value: function(){
             return 5;
           }
         },
-        user:{
-          type: Object,
-          notify: true,
-        },
-        statusKnow:{
-          type: Object,
-          notify: true,
-        },
+
         serviceWorkerState:{
           type: String,
           notify: true,
           observer: 'serviceWorkerStateChanged'
         },
-        token:{
-          type: String,
-          notify: true,
-        },
+
         userSubscribedForPush:{
           type: Boolean,
           notify: true,
           reflectToAttribute: true,
+          observer: 'userSubscribedForPushHandler',
         },
+
       },
-      askForNotificationPermission: function(){
-        this.fire('askingForNotification');
-      },
+      
       listeners: {
         'immediate-value-change': 'immediateValueChangeHandler',
         'timerStarted': 'hideSlider',
         'change': 'changeHandler',
         'timerReseted': 'resetEventHandler',
         'timerFinished': 'finishedEventHandler',
+      },
+      
+      userSubscribedForPushHandler: function(){
+        this.$.options.userSubscribedForPush = true;
       },
       playHandler: function(){
         if(this.$.timer.paused === true){
@@ -158,27 +140,25 @@
         this.$.slider.removeAttribute('disapear', '');
         this.$.timer.reset(this.$.slider.value);
         this.fire('timerHasFinished');
-        window.navigator.vibrate([800, 500, 800, 500, 800, 500, 800]);
+
+        window.navigator.vibrate([500,100,500,100,500,100,500]);
       },
       resetEventHandler:function(){
         this.$.reset.setAttribute('disapear', '');
         this.$.pause.setAttribute('disapear', '');
         this.$.slider.removeAttribute('disapear', '');
       },
-      //Updates the value on change of the slider while user is interacting
       immediateValueChangeHandler: function (e) {
         var value = this.$.slider.immediateValue;
         this.currentTime = value;
       },
-      //Updates the value on change of the slider right before user interaction
       changeHandler: function (e) {
         var value = this.$.slider.value;
         this.currentTime = value;
       },
-      //Treats the service worker status change
       serviceWorkerStateChanged: function(newServiceWorkerState){
         if(newServiceWorkerState === 'installed'){
-            this.$.serviceWorkerFeedbackToast.text = 'cache done! ready to go off-line';
+            this.$.serviceWorkerFeedbackToast.text = 'This page is ready for off-line use';
             this.$.serviceWorkerFeedbackToast.opened = true;
         } else if (newServiceWorkerState === 'update' || newServiceWorkerState === 'updated' || newServiceWorkerState === 'waiting'){
             this.$.serviceWorkerUpdateAviableToast.opened = true;
@@ -189,19 +169,9 @@
           return
         }
       },
-      //Reload the page if user clicked on a update toast
       toastReloadApp: function(){
         this.$.serviceWorkerUpdateAviableToast.toggle();
         location.reload();
-      },
-      ready: function(){
-        // this.$.auth.signInAnonymously()
-        //            .then(function(response){
-        //             //  console.log(response);
-        //            })
-        //            .catch(function(error){
-        //             //  console.lgo(error);
-        //            });
       }
     });
   </script>

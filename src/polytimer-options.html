@@ -1,19 +1,16 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-
-
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/iron-icons/av-icons.html">
-
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 
 <dom-module id="polytimer-options">
   <template>
     <style>
-      :host {
+      :host{
         position: absolute;
         top: 0;
         right: 0;
@@ -28,44 +25,77 @@
       paper-menu-button {
         color: white;
       }
-
+      
       paper-listbox > a{
         text-decoration: none;
         color: inherit;
       }
     </style>
-
-    <paper-menu-button dynamic-align horizontal-offset="10" vertical-offset="10">
-      <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
-      <paper-listbox class="dropdown-content">
-        <a href="https://twitter.com/davi_mbatista" target="_blank" tabindex="-1">
-          <paper-item>@davi_mbatista</paper-item>
-        </a>
-        <a href="https://github.com/davi-mbatista" target="_blank" rel="noopener" tabindex="-1">
-          <paper-item>Feedback</paper-item>
-        </a>
-        <a tabindex="-1" hidden$={{userSubscribedForPush}}>
-          <paper-item id="notifications-enabler" on-tap="askForNotificationPermission">Enable Notifications</paper-item>
-        </a>
-      </paper-listbox>
-    </paper-menu-button>
+    
+      <paper-menu-button dynamic-align horizontal-offset="10" vertical-offset="10">
+        <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+        <paper-listbox class="dropdown-content">
+          <a href="https://twitter.com/davi_mbatista" target="_blank" rel="noopener" tabindex="-1">
+            <paper-item>{{localize('madeby')}} @davi_mbatista</paper-item>
+          </a>
+          <a href="https://github.com/davi-mbatista/polytimer" target="_blank" rel="noopener" tabindex="-1">
+            <paper-item>{{localize('feedback')}}</paper-item>
+          </a>
+          <a tabindex="-1" hidden$={{userSubscribedForPush}}>
+            <paper-item id="notifications-enabler" on-tap="askForNotificationPermission">{{localize('enableNotifications')}}</paper-item>
+          </a>
+        </paper-listbox>
+      </paper-menu-button>
 
   </template>
   <script>
     Polymer({
       is: 'polytimer-options',
 
-      properties:{
+      properties: {
         userSubscribedForPush:{
           type: Boolean,
-          notify: true,
-          reflectToAttribute: true,
-        }
+          reflectToAttribute: true
+        },
+        language: {
+          value: 'en'
+        },
+        resources: {
+          value: function() {
+            return {
+              'en': { 
+                'enableNotifications': 'Enable Notifications',
+                'feedback': 'Feedback',
+                'madeby': 'Made by ',
+              },
+              'fr': { 
+                'enableNotifications': 'Activer les notifications',
+                'feedback': 'Retour',
+                'madeby': 'Créé par ',                        
+              },
+              'br': { 
+                'enableNotifications': 'Ativar notificações',
+                'feedback': 'Retorno',
+                'madeby': 'Feito por ',                        
+              },
+              'gr': { 
+                'enableNotifications': 'Aktivierung von Benachrichtigungen',
+                'feedback': 'Rückkehr',
+                'madeby': 'Erstellt von ',                        
+              }
+            }
+          }
+        },
       },
+
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
 
       askForNotificationPermission: function(){
         this.fire('askingForNotification');
-      }
+      },
+
     });
   </script>
 </dom-module>
