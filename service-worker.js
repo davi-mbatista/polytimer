@@ -21,7 +21,7 @@ self.addEventListener('push', function(event) {
     "body":   "Time is up!",
     "icon":   "/images/manifest/icon-512x512.png",
     "badge":  "/images/notification/badge-96x96.png",
-    "vibrate": [500,110,500,110,500,110,500,110,500,110,500,110],
+    "vibrate": [500,100,500,100,500,100,500],
     "tag": 'renotify',
     "renotify": true
   };
@@ -34,7 +34,7 @@ self.addEventListener('message', function(event) {
     "body": "Time is up!",
     "icon": "/images/manifest/icon-512x512.png",
     "badge":  "/images/notification/badge-96x96.png",
-    "vibrate": [500,110,500,110,500,110,500,110,500,110,500,110],
+    "vibrate": [500,100,500,100,500,100,500],
     "tag": 'renotify',
     "renotify": true
   };
