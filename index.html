@@ -162,6 +162,7 @@
         height: 100%;
 
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
         align-items: center;
         align-content: center;
@@ -169,6 +170,21 @@
         text-align: center;
         color: white;
       }
+      .notsupportview > div{
+        width: 100%;
+        font-weight: 300;
+        line-height: 1.5rem;
+        color: #D1C4E9;
+      }
+
+      .sadface{
+        font-size: 4rem;
+        margin: 1rem 0;
+        font-weight: 100;        
+        transform: rotate(90deg);
+        color: #7E57C2;
+      }
+
     </style>
   
     <link rel="import" href="/src/polytimer-app.html">   
@@ -177,8 +193,11 @@
   <!--ENTRY POINT-->
   <body>
     <polytimer-app ></polytimer-app>
-    <div class="notsupportview">Looks like your browser does not </br>support it =/</div>
-
+    <audio id="notification" src="./audio/polytimer-notification.mp3" preload loop>
+    <div class="notsupportview">
+      <span class="sadface">=/</span>      
+      <div>Polytimer is not ready </br> your browser yet...</div>
+    </div>
 
     <!--Asking for push permission-->
     <script src="./push-notification-util.js"></script>
@@ -191,6 +210,10 @@
 
       polytimerApp.addEventListener('timerHasFinished', function(){
         serviceWorkerRegistration.active.postMessage('Time is up!');
+        document.querySelector('audio').play();
+        setTimeout(function(){
+        document.querySelector('audio').pause();
+        }, 2500);
       })
     </script>
 
