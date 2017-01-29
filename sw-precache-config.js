@@ -15,6 +15,7 @@ module.exports = {
     '/index.html',
     '/manifest.json',
     '/images/**/*',
+    '/audio/**/*',
     '/bower_components/webcomponentsjs/webcomponents-lite.min.js',
   ],
   navigateFallback: 'index.html',
