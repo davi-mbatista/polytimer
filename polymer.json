@@ -8,9 +8,11 @@
   "sourceGlobs": [
     "src/**/*",
     "images/**/*",
+    "audio/**/*",
     "bower.json"
   ],
   "includeDependencies": [
+    "audio/",
     "manifest.json",
     "favicon.ico",
     "humans.txt",
