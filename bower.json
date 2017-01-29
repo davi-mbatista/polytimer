@@ -27,7 +27,8 @@
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
     "paper-item": "PolymerElements/paper-item#^1.2.1",
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
-    "paper-listbox": "polymerelements/paper-listbox#^1.1.2"
+    "paper-listbox": "polymerelements/paper-listbox#^1.1.2",
+    "app-localize-behavior": "PolymerElements/app-localize-behavior#^0.10.1"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
