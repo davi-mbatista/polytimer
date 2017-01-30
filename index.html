@@ -192,13 +192,19 @@
 
   <!--ENTRY POINT-->
   <body>
+
     <polytimer-app ></polytimer-app>
-    <audio id="notification" src="./audio/polytimer-notification.mp3" preload loop>
     <div class="notsupportview">
       <span class="sadface">=/</span>      
-      <div>Polytimer is not ready </br> your browser yet...</div>
+      <div>Polytimer is not ready for</br> your browser yet...</div>
     </div>
-
+    <audio 
+      id="notification" 
+      >
+      <source src="audio/polytimer-notification.mp3" />  
+      <source src="audio/polytimer-notification.ogg" />  
+    </audio>
+    
     <!--Asking for push permission-->
     <script src="./push-notification-util.js"></script>
     <script>
@@ -210,10 +216,8 @@
 
       polytimerApp.addEventListener('timerHasFinished', function(){
         serviceWorkerRegistration.active.postMessage('Time is up!');
-        document.querySelector('audio').play();
-        setTimeout(function(){
-        document.querySelector('audio').pause();
-        }, 2500);
+        document.querySelector('audio').load();
+        document.querySelector('audio').play();        
       })
     </script>
 
