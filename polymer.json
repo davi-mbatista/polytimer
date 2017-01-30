@@ -12,7 +12,9 @@
     "bower.json"
   ],
   "includeDependencies": [
-    "audio/",
+    "polytimernotification.mp3",
+    "polytimernotification.wav",
+    "polytimernotification.ogg",            
     "manifest.json",
     "favicon.ico",
     "humans.txt",
