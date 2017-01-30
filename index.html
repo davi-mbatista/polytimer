@@ -193,31 +193,47 @@
   <!--ENTRY POINT-->
   <body>
 
+    <!--APP-->
     <polytimer-app ></polytimer-app>
+    
+    <!--Notification audio-->
+    <audio id="notification-sound" preload="auto">
+      <source src="polytimernotification.ogg" type="audio/ogg">
+      <source src="polytimernotification.mp3" type="audio/mpeg">
+      <source src="polytimernotification.wav" type="audio/wav">
+    </audio>
+
+    <!--Browser has no support-->
     <div class="notsupportview">
       <span class="sadface">=/</span>      
       <div>Polytimer is not ready for</br> your browser yet...</div>
     </div>
-    <audio 
-      id="notification" 
-      >
-      <source src="audio/polytimer-notification.mp3" />  
-      <source src="audio/polytimer-notification.ogg" />  
-    </audio>
     
     <!--Asking for push permission-->
     <script src="./push-notification-util.js"></script>
     <script>
+      var notificationSound = document.querySelector('#notification-sound');
       var polytimerApp = document.querySelector('polytimer-app');
+
+      function playNotificationSound(){
+        var playPromise = notificationSound.play();
+
+        if (playPromise !== undefined) {
+          playPromise.then(function() {
+            // Automatic playback started!
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }
+      };
 
       polytimerApp.addEventListener('askingForNotification', function(){
         askingForNotificationPermission();
       });
 
       polytimerApp.addEventListener('timerHasFinished', function(){
+        playNotificationSound();        
         serviceWorkerRegistration.active.postMessage('Time is up!');
-        document.querySelector('audio').load();
-        document.querySelector('audio').play();        
       })
     </script>
 
