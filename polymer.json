@@ -2,13 +2,13 @@
   "entrypoint": "index.html",
   "shell": "src/polytimer-app.html",
   "fragments": [
-    "src/polytimer-icons.html",    
-    "src/polytimer-404.html"
+    "src/polytimer-icons.html",
+    "src/polytimer-timer.html",      
+    "src/polytimer-options.html"
   ],
   "sourceGlobs": [
     "src/**/*",
     "images/**/*",
-    "audio/**/*",
     "bower.json"
   ],
   "includeDependencies": [
